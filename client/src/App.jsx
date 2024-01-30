@@ -1,29 +1,35 @@
-// App.jsx
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import Appbar from './component/Appbar';
-import AddCourse from './component/AddCourse';
-import Course from './component/Course';
-import Courses from './component/Courses';
-import Signin from './component/Signin';
-import Signup from './component/Signup';
-import Home from './component/Home'
+import BoughtCourses from "./components/BoughtCourses"
+import Courses from "./components/Courses"
+import Header from "./components/Header"
+import AddCourses from "./components/AddCourses"
+import BoughtCoursesId from "./components/BoughtCoursesId"
+import Login from "./components/Login"
+import SignUp from "./components/SignUp"
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+
+function Home() {
+  return <h1>Welcome to the Home Page</h1>;
+}
 
 function App() {
   return (
     <>
-      <Appbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/addcourse" element={<AddCourse />} />
-        <Route path="/course/:courseid" element={<Course />} />
-        <Route path="/courses" element={<Courses />} />
-        <Route path="/signin" element={<Signin />} />
-        <Route path="/signup" element={<Signup />} />
-      </Routes>
+      
+      <Router>
+      <Header></Header>
+        <Routes>
+          <Route path="/" element={<Home/>}></Route>
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/boughtCourses" element={<BoughtCourses />} />
+          <Route path="/boughtCourses/:id" element={<BoughtCoursesId />} />
+          <Route path="/addCourses" element={<AddCourses />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp/>} />
+
+        </Routes>
+      </Router>
     </>
-  );
+  )
 }
 
-
-export default App;
+export default App

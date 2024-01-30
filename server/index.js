@@ -2,9 +2,11 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { User, Courses } from './db/index.js';
+import cors from 'cors';
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 const secret = "JWT-SECRET";
 
@@ -27,6 +29,20 @@ const authenticateJwt = (req, res, next) => {
   }
 };
 
+
+app.post("/me",authenticateJwt,async(req,res)=>{
+  const user=await User.findOne({email : req.user.email});
+
+  if(!user)
+  {
+    res.status(404).json({message:"user not found"})
+    
+  }
+  else{
+    res.status(200).json({message:"user is logged in",loggedIn:true});
+  }
+})
+
 app.post('/signup', async (req, res) => {
   const { password, email } = req.body;
 
@@ -38,7 +54,8 @@ app.post('/signup', async (req, res) => {
       newAdmin.save();
 
       const token = jwt.sign({ email }, secret, { expiresIn: '10h' });
-      res.json({ message: 'Admin created successfully', token });
+      res.json({message:"User created", token:token });
+      console.log("user created");
     }
   }
   User.findOne({ email }).then(callback);
@@ -54,11 +71,13 @@ app.post('/login', async (req, res) => {
     const token = jwt.sign({ email }, secret, { expiresIn: '10h' });
     res.json({ message: 'Logged in successfully', token });
   } else {
-    res.status(403).json({ message: "Invalid email and password" });
+    res.status(403).json({ message: "Invalid email or password" });
   }
 });
 
-app.post('/soldCourses', authenticateJwt, async (req, res) => {
+
+
+app.post('/addCourses', authenticateJwt, async (req, res) => {
     const course = req.body;
     const user = await User.findOne({ email: req.user.email }).populate('coursesSold');
 
@@ -68,7 +87,7 @@ app.post('/soldCourses', authenticateJwt, async (req, res) => {
     } 
 
     if (!course) {
-        console.log("Course not found in /soldcourses");
+        console.log("Course not found in /addcourses");
         return res.status(404).json({ message: "Course not found" });
     }
 

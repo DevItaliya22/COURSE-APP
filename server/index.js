@@ -41,6 +41,7 @@ app.post("/me",authenticateJwt,async(req,res)=>{
   else{
     res.status(200).json({message:"user is logged in",loggedIn:true});
   }
+
 })
 
 app.post('/signup', async (req, res) => {
@@ -53,7 +54,7 @@ app.post('/signup', async (req, res) => {
       const newAdmin = new User({ email: email, password: password });
       newAdmin.save();
 
-      const token = jwt.sign({ email }, secret, { expiresIn: '10h' });
+      const token = jwt.sign({ email }, secret, { expiresIn: '100h' });
       res.json({message:"User created", token:token });
       console.log("user created");
     }
@@ -68,7 +69,7 @@ app.post('/login', async (req, res) => {
 
   if (admin) {
     console.log(admin._id);
-    const token = jwt.sign({ email }, secret, { expiresIn: '10h' });
+    const token = jwt.sign({ email }, secret, { expiresIn: '100h' });
     res.json({ message: 'Logged in successfully', token });
   } else {
     res.status(403).json({ message: "Invalid email or password" });
@@ -127,6 +128,7 @@ app.post('/buyCourse',authenticateJwt,async(req,res)=>{
     }
     user.coursesBought.push(course._id)
     await user.save();
+    console.log("bought ")
     res.status(200).json({ message: 'Course purchased successfully', courseId: course._id });
 })
 
@@ -141,14 +143,32 @@ app.get('/boughtCourses', authenticateJwt, async (req, res) => {
       if (user.coursesBought && user.coursesBought.length > 0) {
         res.status(200).json(user.coursesBought);
       } else {
-        res.status(403).json({ message: "User has no bought courses" });
+        res.status(200).json({ message: "User has no bought courses" });
       }
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal server error' });
     }
 });
-  
+
+app.get('/soldCourses', authenticateJwt, async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.user.email }).populate('coursesSold');
+
+    if (!user) {
+      console.log('User not found');
+      return res.status(404).json({ message: 'User not found' });
+    }
+    if (user.coursesSold && user.coursesSold.length > 0) {
+      res.status(200).json(user.coursesSold);
+    } else {
+      res.status(200).json({ message: "User has no sold courses" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 app.get('/boughtCourses/:id', authenticateJwt, async (req, res) => {
     try {
       const id=req.params.id;

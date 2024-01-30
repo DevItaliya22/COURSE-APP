@@ -2,7 +2,7 @@ import React from 'react'
 
 function BoughtCourses() {
   return (
-    <div>BoughtCourses</div>
+    <div> all already BoughtCourses</div>
   )
 }
 

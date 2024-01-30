@@ -81,11 +81,11 @@ app.post('/addCourses', authenticateJwt, async (req, res) => {
     const course = req.body;
     const user = await User.findOne({ email: req.user.email }).populate('coursesSold');
 
+    console.log("came");
     if (!user) {
         console.log("User not found");
         return res.status(404).json({ message: "User not found" });
     } 
-
     if (!course) {
         console.log("Course not found in /addcourses");
         return res.status(404).json({ message: "Course not found" });
@@ -94,7 +94,6 @@ app.post('/addCourses', authenticateJwt, async (req, res) => {
     const obj = {
         title: course.title,
         price: course.price,
-       
     };
 
     const newCourse = new Courses(obj);

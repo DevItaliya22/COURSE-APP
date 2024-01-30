@@ -12,11 +12,11 @@ const userSchema = new mongoose.Schema({
     },
     coursesBought: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'courses'
+        ref: 'Courses'
     }],
     coursesSold: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'courses'
+        ref: 'Courses'
     }]
 });
 
@@ -31,7 +31,7 @@ const coursesSchema = new mongoose.Schema({
     }
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema); 
 const Courses = mongoose.model('Courses', coursesSchema);
 
 export{

@@ -81,7 +81,8 @@ app.post('/soldCourses', authenticateJwt, async (req, res) => {
     const newCourse = new Courses(obj);
     await newCourse.save();
 
-    const curr_course = await Courses.findOne(obj);
+    const curr_course = await Courses.findOne({ title: course.title,
+      price: course.price,});
 
     user.coursesSold.push(curr_course._id);
 
@@ -94,15 +95,12 @@ app.post('/soldCourses', authenticateJwt, async (req, res) => {
 app.post('/buyCourse',authenticateJwt,async(req,res)=>{
     const course=await Courses.findOne({title : req.body.title, price:req.body.price})
 
-    if(!course)
-    {
-        return res.status(404).json({message: "course not found"})
-    }
+    if(!course)return res.status(404).json({message: "course not found"})
+    
     const user = await User.findOne({ email: req.user.email });
-    if(!user)
-    {
-        return res.status(404).json({ message: 'User not found' });
-    }
+    
+    if(!user) return res.status(404).json({ message: 'User not found' });
+    
     if (!user.coursesBought) {
         user.coursesBought = [];
     }

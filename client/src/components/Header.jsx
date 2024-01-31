@@ -7,7 +7,7 @@ function Header() {
   const { isLoggedIn, logout } = useAuth();
 
   return (
-    <div style={{ width: '100%', height: '65px', background: 'pink' }}>
+    <div style={{ width: '100%', height: '65px', background: 'lavender' }}>
       {!isLoggedIn ? (
         <>
           <button

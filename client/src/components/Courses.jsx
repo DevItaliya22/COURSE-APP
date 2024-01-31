@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import { useAuth } from '../context/AuthContext.jsx';
 
 const CourseCard = ({ title, price }) => {
   const handleBuyCourse = async () => {
@@ -19,7 +19,7 @@ const CourseCard = ({ title, price }) => {
 
       const res = await axios.post("http://localhost:3000/buyCourse", data, config);
 
-      console.log(res.data); // Log the response from the server
+      console.log(res.data);
 
     } catch (error) {
       console.error('Error buying course:', error);
@@ -43,6 +43,7 @@ const CourseCard = ({ title, price }) => {
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
+  const {isLoggedIn} = useAuth();
 
   useEffect(() => {
     const getcourses = async () => {
@@ -63,15 +64,22 @@ const Courses = () => {
 
     getcourses();
   }, []);
-
   return (
     <div style={styles.container}>
-      {courses.map((course) => (
-        <CourseCard key={course._id} title={course.title} price={course.price} />
-      ))}
+      {isLoggedIn ? (
+        courses.length ? (
+          courses.map((course) => (
+            <CourseCard title={course.title} price={course.price} key={course.id} />
+          ))
+        ) : (
+          <div>No courses available</div>
+        )
+      ) : (
+        <div>Please log in to view courses</div>
+      )}
     </div>
   );
-};
+      }
 
 const styles = {
   container: {
@@ -79,7 +87,7 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-    backgroundColor: 'pink',
+    backgroundColor: 'lavender',
   },
   courseCard: {
     width: '300px',
@@ -88,7 +96,7 @@ const styles = {
     border: '2px solid black',
     borderRadius: '10px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    backgroundColor: 'pink',
+    backgroundColor: 'lavender',
     textAlign: 'center',
   },
   submitButton: {
@@ -96,7 +104,7 @@ const styles = {
     padding: '8px',
     border: '2px solid black',
     borderRadius: '5px',
-    background: 'pink',
+    background: 'lavender',
     cursor: 'pointer',
   },
 };

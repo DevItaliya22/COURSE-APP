@@ -34,7 +34,7 @@ function SignUp() {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: 'pink' }}>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: 'lavender' }}>
       <div style={{ width: '300px', padding: '20px', border: '2px solid black', borderRadius: '10px', background: 'white' }}>
         <h2>Sign Up</h2>
         <div style={{ marginBottom: '15px' }}>
@@ -67,7 +67,7 @@ function SignUp() {
             onClick={handleSignUp}
             type="submit"
             value="Sign Up"
-            style={{ width: '100%', padding: '8px', border: '2px solid black', borderRadius: '5px', background: 'pink', cursor: 'pointer' }}
+            style={{ width: '100%', padding: '8px', border: '2px solid black', borderRadius: '5px', background: 'lavender', cursor: 'pointer' }}
           />
         </div>
       </div>

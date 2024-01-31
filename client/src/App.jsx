@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import SoldCourses from "./components/SoldCourses"
 
 function Home() {
-  return <h1>Welcome to the Home Page</h1>;
+  return <h1 style={{background:"lavender"}}>Welcome to the Home Page</h1>;
 }
 
 function App() {

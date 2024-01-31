@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from 'react'
 import axios from 'axios'
+import { useAuth } from '../context/AuthContext.jsx';
 
 
 
@@ -13,7 +14,9 @@ const CourseCard = ({ title, price }) => (
 
 function SoldCourses() {
 
-  const [courses,setCourses]  =useState();
+  const [courses,setCourses]  =useState([]);
+  const { isLoggedIn, logout } = useAuth();
+
 
   useEffect(() => {
     const getcourses = async () => {
@@ -38,11 +41,18 @@ function SoldCourses() {
   }, []); 
 
   return (
+    
    < div style={styles.container}>
-    { courses && courses.map((course) => (
-      <CourseCard key={course._id} title={course.title} price={course.price} />
-    ))}
-  </div>
+    { 
+      courses.length && isLoggedIn ? 
+      (courses.map((course) => (
+        <CourseCard title={course.title} price={course.price} key={course.id}> </CourseCard>
+      ))
+      ) : (
+        <div>no course sold yet</div>
+      )
+    }
+   </div>
   )
 }
 
@@ -53,7 +63,7 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-    backgroundColor:"pink"
+    backgroundColor:"lavender"
   },
   courseCard: {
     width: '300px',
@@ -62,7 +72,7 @@ const styles = {
     border: '2px solid black',
     borderRadius: '10px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    backgroundColor: 'pink',
+    backgroundColor: 'lavender',
     textAlign: 'center',
   },
   submitButton: {
@@ -70,7 +80,7 @@ const styles = {
     padding: '8px',
     border: '2px solid black',
     borderRadius: '5px',
-    background: 'pink',
+    background: 'lavender',
     cursor: 'pointer',
   }
 };

@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { User, Courses } from './db/index.js';
 import cors from 'cors';
+import {z} from "zod"
 
 const app = express();
 app.use(express.json());
@@ -77,31 +78,42 @@ app.post('/login', async (req, res) => {
 });
 
 
+const addCoursesSchema = z.object({
+  title: z.string().min(1),
+  price: z.string().min(1),
+});
 
 app.post('/addCourses', authenticateJwt, async (req, res) => {
-    const course = req.body;
+  try {
+   
+    const inputData = addCoursesSchema.safeParse(req.body);
+
+    if(!inputData.success)
+    {
+      res.status(404).json({message:"zod invalid input"})
+    }
+
+    const course = inputData;
     const user = await User.findOne({ email: req.user.email }).populate('coursesSold');
 
     console.log("came");
     if (!user) {
-        console.log("User not found");
-        return res.status(404).json({ message: "User not found" });
-    } 
-    if (!course) {
-        console.log("Course not found in /addcourses");
-        return res.status(404).json({ message: "Course not found" });
+      console.log("User not found");
+      return res.status(404).json({ message: "User not found" });
     }
 
     const obj = {
-        title: course.title,
-        price: course.price,
+      title: course.title,
+      price: course.price,
     };
 
     const newCourse = new Courses(obj);
     await newCourse.save();
 
-    const curr_course = await Courses.findOne({ title: course.title,
-      price: course.price,});
+    const curr_course = await Courses.findOne({
+      title: course.title,
+      price: course.price,
+    });
 
     user.coursesSold.push(curr_course._id);
 
@@ -109,6 +121,10 @@ app.post('/addCourses', authenticateJwt, async (req, res) => {
 
     console.log("Course uploaded");
     return res.status(200).json({ message: "Course uploaded" });
+  } catch (error) {
+    console.error("Error during course addition:", error);
+    return res.status(400).json({ message: "Invalid input data" });
+  }
 });
 
 app.post('/buyCourse',authenticateJwt,async(req,res)=>{
@@ -124,7 +140,7 @@ app.post('/buyCourse',authenticateJwt,async(req,res)=>{
         user.coursesBought = [];
     }
     if (user.coursesBought.includes(course._id)) {
-        return res.status(403).json({ message: 'User already owns this course' });
+        return res.json({ message: 'User already owns this course' });
     }
     user.coursesBought.push(course._id)
     await user.save();
